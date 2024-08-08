@@ -45,55 +45,42 @@ void solve()
     // cin >> t;
     while(t--)
     {
-        int n;
-        cin >> n;
-        vector<int> calc(n+10,INT_MAX);
-        vector<vector<int> >myvec(n+10,vector<int>());
-        calc[1] = 0;
-        calc[2] = 1;
-        calc[3] = 1;
-        myvec[1].push_back(1);
-        myvec[3].push_back(1);
-        myvec[3].push_back(3);
-        myvec[2].push_back(1);
-        myvec[2].push_back(2);
-        for (int i =1;i<=n;i++)
-        {
-            if(i+1>n&&i+3>n&&i+4>n)
-            {
-                break;
-            }
-            if(i+1<=n)
-            {
-                if(calc[i]+1 < calc[i+1])
-                {
-                    myvec[i+1] = myvec[i];
-                    myvec[i+1].push_back(i+1);
-                }
-                calc[i+1] = min(calc[i+1],calc[i]+1);
-            }
-            if(i*2<=n)
-            {
-                if(calc[i]+1 < calc[i*2])
-                {
-                    myvec[i*2] = myvec[i];
-                    myvec[i*2].push_back(i*2);
-                }
-                calc[i*2] = min(calc[i*2],calc[i]+1);
+        string s1,s2;
+        cin >> s1>>s2;
+        vector<vector<int> > vv(s1.size()+1,vector<int>(s2.size()+1,0));
 
-            }
-            if(i*3<=n)
+        for(int i =1;i<=s1.size();i++) vv[i][0] = i;
+        for(int i =1;i<=s2.size();i++) vv[0][i] = i;
+
+        int ins = 0,dele =0, rep = 0, eq = 0;
+
+        for(int i =1;i<=s1.size();i++)
+        {
+            for(int j = 1;j<=s2.size();j++)
             {
-                if(calc[i]+1 < calc[i*3])
+                ins = vv[i][j-1] + 1;
+                dele = vv[i-1][j] + 1;
+                eq = vv[i-1][j-1];
+                rep = vv[i-1][j-1]+1;
+                if(s1[i-1]==s2[j-1])
                 {
-                    myvec[i*3] = myvec[i];
-                    myvec[i*3].push_back(i*3);
+                    vv[i][j] = min(min(ins,dele),eq);
                 }
-                calc[i*3] = min(calc[i*3],calc[i]+1);
+                else
+                {
+                    vv[i][j] = min(min(ins,dele),rep);
+                }
             }
         }
-        cout << calc[n] << "\n";
-        rep(i,myvec[n].size()) cout << myvec[n][i] << " ";
+        // rep(i,s1.size()+1)
+        // {
+        //     rep(j,s2.size()+1)
+        //     {
+        //         cout << vv[i][j] << " ";
+        //     }
+        //     cout << "\n";
+        // }
+        cout << vv[s1.size()][s2.size()];
     }
 }
 /*
