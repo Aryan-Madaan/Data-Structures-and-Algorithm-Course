@@ -47,9 +47,12 @@ void solve()
     {
         int n;
         cin >> n;
-        vector< pair<int,int> > mypp(n,mp(0,0));
-        rep(i,n) cin >> mypp[i].first >> mypp[i].second;
-        
+        cout << n << "\n";
+        for(int i =0;i<n;i++)
+        {
+            // cout << (rand()%2 == 0?-1:1)*rand()%100000 << " " << (rand()%2 == 0?-1:1)*rand()%100000<<"\n";
+            cout << rand()%1001 << " ";
+        }
     }
 }
 /*
@@ -62,7 +65,7 @@ void solve()
 //---------------------------------------------------------------------------------------------------
 int main() {
    cout.precision(numeric_limits<double>::max_digits10);
-       cout << setprecision(4) << fixed;
+       cout << setprecision(15) << fixed;
     Expresso
     solve();
     return 0;
