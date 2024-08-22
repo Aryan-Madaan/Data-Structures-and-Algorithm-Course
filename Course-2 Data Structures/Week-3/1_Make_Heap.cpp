@@ -37,7 +37,45 @@ return (rand() % 1000);
 //---------------------------------------------------------------------------------------------------
 
 
+void swap(vector<int> &vv,int i,int j)
+{
+    int temp = vv[i];
+    vv[i] = vv[j];
+    vv[j] = temp;
+}
 
+void siftdown(vector<int> &vv,vector<pair<int,int> > &myvec,int j)
+{
+    // cout << j << "\n\n";
+    int j2 = 2*j + 1,j3 = 2*j + 2;
+    if(j3<vv.size() && vv[j]>vv[j2]&&vv[j]>vv[j3])
+    {
+        if(vv[j2] < vv[j3])
+        {
+            swap(vv,j,j2);
+            myvec.push_back(mp(j,j2));
+            siftdown(vv,myvec,j2);
+        }
+        else
+        {
+            swap(vv,j,j3);
+            myvec.push_back(mp(j,j3));
+            siftdown(vv,myvec,j3);
+        }
+    }
+    else if(j2<vv.size() && vv[j]>vv[j2])
+    {
+        swap(vv,j,j2);
+        myvec.push_back(mp(j,j2));
+        siftdown(vv,myvec,j2);
+    }
+    else if(j3<vv.size() && vv[j]>vv[j3])
+    {
+        swap(vv,j,j3);
+        myvec.push_back(mp(j,j3));
+        siftdown(vv,myvec,j3);
+    }
+}
 
 void solve()
 {
@@ -47,12 +85,19 @@ void solve()
     {
         int n;
         cin >> n;
-        // cout << n << "\n";
-        for(int i =0;i<n;i++)
+        vector<int> vv(n,0);
+        vector<pair<int,int> > myvec;
+        rep(i,n) cin >> vv[i];
+        for(int i =n/2;i>=0;i--)
         {
-            // cout << (rand()%2 == 0?-1:1)*rand()%100000 << " " << (rand()%2 == 0?-1:1)*rand()%100000<<"\n";
-            cout << rand()%1001 << " " << rand()%1001 << "\n";
-            // cout << 0 << " ";
+            siftdown(vv,myvec,i);
+        }
+        // rep(i,n) cout << vv[i] << " ";
+        // cout << "\n\n";
+        cout << myvec.size() << "\n";
+        rep(i,myvec.size())
+        {
+            cout << myvec[i].first << " " << myvec[i].second << "\n";
         }
     }
 }

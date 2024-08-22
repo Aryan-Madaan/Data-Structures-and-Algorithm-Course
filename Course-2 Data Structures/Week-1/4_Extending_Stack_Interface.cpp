@@ -36,7 +36,57 @@ return (rand() % 1000);
 
 //---------------------------------------------------------------------------------------------------
 
+struct node
+{
+    int key;
+    int max_val;
+    node* next;
+};
 
+class myqueue
+{
+    private:
+    node* head;
+    node* temp;
+
+    public:
+    myqueue()
+    {
+        head = nullptr;
+        temp = nullptr;
+    }
+    void push(int &val)
+    {
+        if(head == nullptr)
+        {
+            head = new node();
+            head->key = val;
+            head->max_val = val;
+        }
+        else
+        {
+            temp = new node();
+            temp->key = val;
+            temp->max_val = max(val,head->max_val);
+            temp->next = head;
+            head = temp;
+        }
+    }
+    void pop()
+    {
+        if(head!=nullptr)
+        {
+            head = head->next;
+        }
+    }
+    void print_max()
+    {
+        if(head!=nullptr)
+        {
+            cout << head->max_val << "\n";
+        }
+    }
+};
 
 
 void solve()
@@ -45,14 +95,26 @@ void solve()
     // cin >> t;
     while(t--)
     {
-        int n;
-        cin >> n;
-        // cout << n << "\n";
-        for(int i =0;i<n;i++)
+        int q,val;
+        cin >> q;
+        string s;
+        myqueue li;
+        rep(i,q)
         {
-            // cout << (rand()%2 == 0?-1:1)*rand()%100000 << " " << (rand()%2 == 0?-1:1)*rand()%100000<<"\n";
-            cout << rand()%1001 << " " << rand()%1001 << "\n";
-            // cout << 0 << " ";
+            cin >> s;
+            if (s =="push")
+            {
+                cin >> val;
+                li.push(val);
+            }
+            else if(s=="pop")
+            {
+                li.pop();
+            }
+            else
+            {
+                li.print_max();
+            }
         }
     }
 }

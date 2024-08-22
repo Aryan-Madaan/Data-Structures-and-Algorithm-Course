@@ -36,7 +36,23 @@ return (rand() % 1000);
 
 //---------------------------------------------------------------------------------------------------
 
-
+int dfs(vector<vector<int> > &vv,vector<bool> &vis,int i)
+{
+    vis[i]=1;
+    if(vv[i].size()==0)
+    {
+        return 1;
+    }
+    else
+    {
+        int res = 1;
+        rep(j,vv[i].size())
+        {
+            res = max(res,1 + dfs(vv,vis,vv[i][j]));
+        }
+        return res;
+    }
+}
 
 
 void solve()
@@ -47,13 +63,24 @@ void solve()
     {
         int n;
         cin >> n;
-        // cout << n << "\n";
-        for(int i =0;i<n;i++)
+        vector<int> v(n,0);
+        rep(i,n) cin >> v[i];
+        vector<vector<int> > vv(n,vector<int>());
+        int start = 0;
+        rep(i,n)
         {
-            // cout << (rand()%2 == 0?-1:1)*rand()%100000 << " " << (rand()%2 == 0?-1:1)*rand()%100000<<"\n";
-            cout << rand()%1001 << " " << rand()%1001 << "\n";
-            // cout << 0 << " ";
+            if(v[i]!=-1)
+            {
+                vv[v[i]].push_back(i);
+            }
+            else
+            {
+                start = i;
+            }
         }
+        vector<bool> vis(n,0);
+        vis[start] = 1;
+        cout << dfs(vv,vis,start);
     }
 }
 /*
