@@ -37,33 +37,31 @@ return (rand() % 1000);
 
 //---------------------------------------------------------------------------------------------------
 
-bool dfs(vector< vector<int> > &graph,vector<bool> &vis,vector<bool> &vis1,int i)
+
+
+void dfs(vector< vector<int> > &graph,vector<bool> &vis,int i)
 {
-    if(vis1[i]==1)
-    {
-        // cout << "Here \n";
-        return 1;
-    }
-    if(vis[i]==1)
-    {
-        return 0;
-    }
-
     vis[i]=1;
-    vis1[i] = 1;
-
-    bool flag = 0;
-
     rep(j,graph[i].size())
     {
-        // cout << graph[i][j] << "\n";
-        flag = flag || dfs(graph,vis,vis1,graph[i][j]);
+        if(!vis[graph[i][j]])
+        dfs(graph,vis,graph[i][j]);
     }
-
-    vis1[i] = 0;
-    
-    return flag;
 }
+
+void dfs(vector< vector<int> > &graph,vector<bool> &vis, vector<int> &order,int i)
+{
+    vis[i]=1;
+    rep(j,graph[i].size())
+    {
+        if(!vis[graph[i][j]])
+        dfs(graph,vis,order,graph[i][j]);
+    }
+    order.push_back(i);
+}
+
+
+
 
 
 void solve()
@@ -76,25 +74,38 @@ void solve()
 
         cin >> n >> edges;
 
-        vector< vector<int> > graph(n,vector<int>(0));
+        vector< vector<int> > graph(n,vector<int>(0)),reverse_graph(n,vector<int>());
         vector<bool> vis(n,0),vis1(n,0);
+        vector<int> order;
+
         rep(i,edges)
         {
             cin >> vert1 >> vert2;
             --vert2;--vert1;
             graph[vert1].push_back(vert2);
+            reverse_graph[vert2].push_back(vert1);
         }
-        
-        bool flag = 0;
+
         rep(i,n)
         {
             if(!vis[i])
             {
-                // cout << "Start Node: " << i << "\n";
-                flag = flag || dfs(graph,vis,vis1,i);
+                dfs(reverse_graph,vis,order,i);
             }
         }
-        cout << flag;
+
+        int strongly_cc = 0;
+              
+        for(int i = order.size()-1;i>=0;i--)
+        {
+            if(!vis1[order[i]])
+            {   
+                strongly_cc++;
+                dfs(graph,vis1,order[i]);
+            }
+        }
+        
+        cout << strongly_cc;
     }
 }
 /*
