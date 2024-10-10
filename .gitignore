@@ -38,3 +38,6 @@
 **/.cph/
 **/*.bin
 **/*.dSYM/
+
+# VSCode
+.vscode
