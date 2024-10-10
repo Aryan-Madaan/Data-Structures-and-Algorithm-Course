@@ -35,5 +35,4 @@
 *.DS_Store
 
 # CPH bin files
-*.bin
-*.prob
+**/cph/
