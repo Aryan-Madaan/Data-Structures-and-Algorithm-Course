@@ -37,7 +37,28 @@ return (rand() % 1000);
 
 //---------------------------------------------------------------------------------------------------
 
+void print(vector<vector<ld> > &matrix,vector<ld> &zobj,vector<int> &curr_basic,int &p,int &q)
+{
+    cout <<"\n\nMatrix\n";
+    rep(i,p)
+    {
+        rep(j,p+q+1)
+        {
+            cout << matrix[i][j] <<  " ";
+        }
+        cout << "\n";
+    }
 
+    cout <<"\nObjectives\n";
+
+
+    rep(i,p+q+1) cout << zobj[i] << " ";
+    cout << "\n";
+
+    cout << "\nCurrent Basis\n";
+    rep(i,p) cout << curr_basic[i] << " ";
+    cout << "\n\n";
+}
 
 
 void solve()
@@ -46,6 +67,170 @@ void solve()
     // cin >> t;
     while(t--)
     {
+        int p,q;
+        cin >> p >> q;
+
+        vector<ld> objective(q,0),zobj(p+q+1,0),ans(q,0);
+        vector<vector<ld> > matrix(p,vector<ld>(p+q+1,0));
+
+        vector<int> curr_basic(p,0);
+
+        rep(i,p)
+        {
+            rep(j,q)
+            {
+                cin >> matrix[i][j];
+            }
+            matrix[i][q+i] = 1;
+        }
+
+        rep(i,p)
+        {
+            cin >> matrix[i][p+q];
+        }
+
+        rep(i,q)
+        {
+            cin >> objective[i];
+            zobj[i] = -objective[i];
+        }
+
+        rep(i,p)
+        {
+            curr_basic[i] = q+i;
+        }
+
+
+        rep(i,p)
+        {
+            if(matrix[i][p+q]<0)
+            {
+                rep(j,p+q+1)
+                {
+                    matrix[i][j] *= -1.0;
+                }
+            }
+        }
+
+        print(matrix,zobj,curr_basic,p,q);
+
+        bool flag = true,inf_flag = false;
+
+        int min_col = -1,min_row=-1;
+        ld min_value=0,min_ratio = LLONG_MAX,mul_factor;
+
+        int curr_itr = 0;
+
+        while(flag&& curr_itr < 10)
+        {
+            curr_itr++;
+
+            min_value=0;
+            min_ratio = LLONG_MAX;
+            min_col = -1;
+
+
+            rep(i,p+q)
+            {
+                if(min_value>zobj[i])
+                {
+                    min_value = zobj[i];
+                    min_col = i;
+                }
+            }
+
+            if(min_col==-1)
+            {
+                flag = false;
+                break;
+            }
+
+            rep(i,p)
+            {
+                if(min_ratio>(matrix[i][p+q]/matrix[i][min_col]) && (matrix[i][p+q]/matrix[i][min_col])>0)
+                {
+                    min_ratio =matrix[i][p+q]/matrix[i][min_col];
+                    min_row = i;
+                }   
+            }
+
+            if(min_row==-1)
+            {
+                flag = false;
+                inf_flag = true;
+                break;
+            }
+
+            cout << "\nMin Row: " << min_row << " Min Col: " << min_col << "\n";
+
+            curr_basic[min_row] = min_col;
+
+            rep(i,p)
+            {
+                mul_factor = matrix[i][min_col]/matrix[min_row][min_col];
+                if(i==min_row)
+                {
+                    mul_factor =  1.0/matrix[min_row][min_col];
+                    rep(j,p+q+1)
+                    {
+                        matrix[i][j] *= mul_factor;
+                    }
+                }
+                else
+                {
+                    rep(j,p+q+1)
+                    {
+                        matrix[i][j] -= mul_factor*matrix[min_row][j];
+                    }
+                }
+            }
+
+            mul_factor = zobj[min_col]/matrix[min_row][min_col];
+
+            rep(j,p+q+1)
+            {
+                zobj[j] -= mul_factor*matrix[min_row][j];
+            }
+
+
+            print(matrix,zobj,curr_basic,p,q);
+        }
+
+        if(inf_flag){
+            cout <<"Infinity";
+            return;
+        }
+
+        bool no_sol_flag = false;
+
+        rep(i,curr_basic.size())
+        {
+            if(curr_basic[i]>=2*q && matrix[i][p+q]!=0)
+            {
+                no_sol_flag = true;
+                break;
+            }
+        }
+
+        if(no_sol_flag)
+        {
+            cout << "No solution";
+            return;
+        }
+
+        rep(i,curr_basic.size())
+        {
+            if(curr_basic[i]<q)
+            ans[curr_basic[i]] = matrix[i][p+q];
+        }
+
+        cout <<"Bounded solution\n";
+
+        rep(i,ans.size())
+        {
+            cout << ans[i] << " ";
+        }
+
     }
 }
 /*
@@ -57,8 +242,8 @@ void solve()
 
 //---------------------------------------------------------------------------------------------------
 int main() {
-   cout.precision(numeric_limits<double>::max_digits10);
-       cout << setprecision(15) << fixed;
+   cout.precision(numeric_limits<ld>::max_digits10);
+       cout << setprecision(1) << fixed;
     Expresso
     solve();
     return 0;
